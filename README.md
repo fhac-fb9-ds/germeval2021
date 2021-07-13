@@ -25,5 +25,5 @@ Experiments and their results are filed in [experiments](./experiments).
 The experiments were run in a conda environment with python 3.9.
 You can find most of the required packages and the command for creating a new environemnt in the requirements.txt.
 In addition to the packages described in the requirements.txt, two packages were installed using pip:
-* `pip install emojis`
+* `pip install emoji`
 * `pip install transformers`
