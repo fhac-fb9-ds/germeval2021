@@ -1,6 +1,7 @@
 .idea
 
 models/
+models
 *gbert_trainer*
 *gelectra_trainer*
 *gottbert_trainer*

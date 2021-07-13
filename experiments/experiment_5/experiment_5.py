@@ -134,7 +134,7 @@ def compute_scores_for_threshold(trainer, dataset):
 if __name__ == '__main__':
     # relevant inputs
     model_count = 200
-    model_names = ['gelectra', 'gbert']
+    model_names = ['gelectra']
     # model_names = ['gbert', 'gelectra', 'gottbert']
 
     df_train, df_test = load_datasets()
@@ -247,12 +247,12 @@ if __name__ == '__main__':
     df_test.to_csv('results/answer.csv')
 
     with open('results/thresholds.txt', 'w') as f:
-        f.write(f'optimal threshold for classifications of class toxic: {best_t_t}')
-        f.write(f'optimal threshold for classifications of class engaging: {best_t_e}')
-        f.write(f'optimal threshold for classifications of class claiming: {best_t_f}')
+        f.write(f'optimal threshold for classifications of class toxic: {best_t_t}\n')
+        f.write(f'optimal threshold for classifications of class engaging: {best_t_e}\n')
+        f.write(f'optimal threshold for classifications of class claiming: {best_t_f}\n')
 
     with open('results/scores.txt', 'w') as f:
-        f.write(f'F1 score for class toxic: {f1_score(y_test[:, 0], y_pred[:, 0])}')
-        f.write(f'F1 score for class engaging: {f1_score(y_test[:, 1], y_pred[:, 1])}')
-        f.write(f'F1 score for class fact-claiming: {f1_score(y_test[:, 2], y_pred[:, 2])}')
-        f.write(f'macro F1 score: {f1_score(y_test, y_pred, average="macro")}')
+        f.write(f'F1 score for class toxic: {f1_score(y_test[:, 0], y_pred[:, 0])}\n')
+        f.write(f'F1 score for class engaging: {f1_score(y_test[:, 1], y_pred[:, 1])}\n')
+        f.write(f'F1 score for class fact-claiming: {f1_score(y_test[:, 2], y_pred[:, 2])}\n')
+        f.write(f'macro F1 score: {f1_score(y_test, y_pred, average="macro")}\n')

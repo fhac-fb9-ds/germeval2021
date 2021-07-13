@@ -209,7 +209,7 @@ def write_scores_to_file(scores, title):
         np.std(scores["test_AUC"])
     ]
 
-    f = open(title + '.txt', "w")
+    f = open('results/' + title + '.txt', "w")
     f.write(title)
     f.write('\nPrecision: ' + '%0.2f' % (means[0] * 100) + ' +- ' + '%0.2f' % (err[0] * 100))
     f.write('\nRecall: ' + '%0.2f' % (means[1] * 100) + ' +- ' + '%0.2f' % (err[1] * 100))

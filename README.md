@@ -4,6 +4,7 @@ Repository containing the experiments described in our paper for the [GermEval 2
 
 The train and test data can be found in the folder [dataset](./dataset).
 Experiments and their results are filed in [experiments](./experiments). 
+The folder [figures](./figures) contains the scripts that were used to create the figures in our paper.
 
 ---
 ### Experiments
@@ -12,12 +13,13 @@ Experiments and their results are filed in [experiments](./experiments).
 |---|---|---|
 | |*model exploration*| |
 |1|50 gelectra|multi-label|
-|2|25 gelectra + 25 gbert|multi-label|
-|3|25 gelectra + 25 gbert|single-label|
+|2|50 gbert|multi-label|
+|3|25 gelectra + 25 gbert|multi-label|
+|4|25 gelectra + 25 gbert|single-label|
 | |*submissions*| |
-|4|submission 1, 200 gelectra|multi-label|
-|5|submission 2, 200 gelectra + 200 gbert|multi-label|
-|6|submission 3, 30 gelectra + 30 gbert|single-label|
+|5|submission 1, 200 gelectra|multi-label|
+|6|submission 2, 200 gelectra + 200 gbert|multi-label|
+|7|submission 3, 30 gelectra + 30 gbert|single-label|
 
 ---
 ## Installation
