@@ -8,7 +8,7 @@ import pandas as pd
 import torch
 import torch.utils.data as tdata
 from matplotlib import pyplot as plt
-from sklearn.metrics import precision_score, recall_score, f1_score, roc_auc_score
+from sklearn.metrics import precision_score, recall_score, roc_auc_score, classification_report
 from sklearn.model_selection import KFold
 from transformers import AutoTokenizer, Trainer, TrainingArguments, AutoModelForSequenceClassification, \
     EarlyStoppingCallback, set_seed
@@ -96,7 +96,7 @@ def compute_metrics(eval_pred):
     logits, labels = eval_pred
     softmax = torch.nn.Softmax(dim=1)
     predictions = np.argmax(softmax(torch.tensor(logits)), axis=-1).detach().cpu().numpy()
-    return {'F1': f1_score(labels, predictions)}
+    return {'F1': calc_f1_score_germeval(labels, predictions)}
 
 
 def plot_result(cross_val_scores, scoring, label):
@@ -233,6 +233,22 @@ def get_hugging_face_name(name):
     return ''
 
 
+def calc_f1_score_germeval(ly_true, ly_pred):
+    macro_f1 = 0
+    if len(ly_true.shape) == 1:
+        ly_true = ly_true[:, np.newaxis]
+        ly_pred = ly_pred[:, np.newaxis]
+    for i in range(ly_true.shape[1]):
+        report = classification_report(ly_true[:, i], ly_pred[:, i], output_dict=True)
+        precision_score = report['macro avg']['precision']
+        recall_score = report['macro avg']['recall']
+        lf1_score = 0
+        if precision_score + recall_score > 0:
+            lf1_score = 2 * precision_score * recall_score / (precision_score + recall_score)
+        macro_f1 += lf1_score
+    return macro_f1 / ly_true.shape[1]
+
+
 if __name__ == '__main__':
     # relevant inputs
     model_count = 25
@@ -359,7 +375,7 @@ if __name__ == '__main__':
             # Set scores for label
             scores[label]['test_Precision'] = np.append(scores[label]['test_Precision'], precision_score(y_val, y_pred))
             scores[label]['test_Recall'] = np.append(scores[label]['test_Recall'], recall_score(y_val, y_pred))
-            scores[label]['test_F1'] = np.append(scores[label]['test_F1'], f1_score(y_val, y_pred))
+            scores[label]['test_F1'] = np.append(scores[label]['test_F1'], calc_f1_score_germeval(y_val, y_pred))
             try:
                 scores[label]['test_AUC'] = np.append(scores[label]['test_AUC'],
                                                       roc_auc_score(y_val, y_pred_proba[:, 1]))

@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 import torch
 import torch.utils.data as tdata
-from sklearn.metrics import f1_score
+from sklearn.metrics import classification_report
 from transformers import AutoTokenizer, Trainer, TrainingArguments, AutoModelForSequenceClassification, \
     EarlyStoppingCallback, set_seed
 
@@ -105,7 +105,7 @@ def compute_metrics(eval_pred):
     logits, labels = eval_pred
     softmax = torch.nn.Softmax(dim=1)
     predictions = np.argmax(softmax(torch.tensor(logits)), axis=-1).detach().cpu().numpy()
-    return {'F1': f1_score(labels, predictions)}
+    return {'F1': calc_f1_score_germeval(labels, predictions)}
 
 
 def get_hugging_face_name(name):
@@ -123,13 +123,29 @@ def compute_scores_for_threshold(trainer, dataset):
     pred_proba = sigmoid(trainer.predict(dataset).predictions)
     for t in np.arange(0, 1.025, 0.025):
         pred = (pred_proba >= t) * 1
-        s_t = np.append(s_t, f1_score(dataset.labels[:, 0], pred[:, 0]))
-        s_e = np.append(s_e, f1_score(dataset.labels[:, 1], pred[:, 1]))
-        s_f = np.append(s_f, f1_score(dataset.labels[:, 2], pred[:, 2]))
+        s_t = np.append(s_t, calc_f1_score_germeval(dataset.labels[:, 0], pred[:, 0]))
+        s_e = np.append(s_e, calc_f1_score_germeval(dataset.labels[:, 1], pred[:, 1]))
+        s_f = np.append(s_f, calc_f1_score_germeval(dataset.labels[:, 2], pred[:, 2]))
     s_t = s_t.reshape((len(s_t), 1))
     s_e = s_e.reshape((len(s_e), 1))
     s_f = s_f.reshape((len(s_f), 1))
     return s_t, s_e, s_f
+
+
+def calc_f1_score_germeval(ly_true, ly_pred):
+    macro_f1 = 0
+    if len(ly_true.shape) == 1:
+        ly_true = ly_true[:, np.newaxis]
+        ly_pred = ly_pred[:, np.newaxis]
+    for i in range(ly_true.shape[1]):
+        report = classification_report(ly_true[:, i], ly_pred[:, i], output_dict=True)
+        precision_score = report['macro avg']['precision']
+        recall_score = report['macro avg']['recall']
+        lf1_score = 0
+        if precision_score + recall_score > 0:
+            lf1_score = 2 * precision_score * recall_score / (precision_score + recall_score)
+        macro_f1 += lf1_score
+    return macro_f1 / ly_true.shape[1]
 
 
 if __name__ == '__main__':
@@ -232,8 +248,8 @@ if __name__ == '__main__':
     df_test.to_csv('results/answer.csv')
 
     with open('results/scores.txt', 'w') as f:
-        f.write(f'F1 score for class toxic: {f1_score(y_test[:, 0], predicted_labels["toxic"])}\n')
-        f.write(f'F1 score for class engaging: {f1_score(y_test[:, 1], predicted_labels["engaging"])}\n')
-        f.write(f'F1 score for class fact-claiming: {f1_score(y_test[:, 2], predicted_labels["fact"])}\n')
+        f.write(f'F1 score for class toxic: {calc_f1_score_germeval(y_test[:, 0], predicted_labels["toxic"])}\n')
+        f.write(f'F1 score for class engaging: {calc_f1_score_germeval(y_test[:, 1], predicted_labels["engaging"])}\n')
+        f.write(f'F1 score for class fact-claiming: {calc_f1_score_germeval(y_test[:, 2], predicted_labels["fact"])}\n')
         y_pred_all = np.c_[predicted_labels["toxic"], predicted_labels["engaging"], predicted_labels["fact"]]
-        f.write(f'macro F1 score: {f1_score(y_test, y_pred_all, average="macro")}\n')
+        f.write(f'macro F1 score: {calc_f1_score_germeval(y_test, y_pred_all)}\n')

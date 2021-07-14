@@ -8,7 +8,7 @@ import pandas as pd
 import torch
 import torch.utils.data as tdata
 from matplotlib import pyplot as plt
-from sklearn.metrics import precision_score, recall_score, f1_score, roc_auc_score, classification_report
+from sklearn.metrics import precision_score, recall_score, roc_auc_score, classification_report
 from sklearn.model_selection import KFold
 from transformers import AutoTokenizer, Trainer, TrainingArguments, AutoModelForSequenceClassification, \
     EarlyStoppingCallback, set_seed
@@ -99,7 +99,7 @@ def sigmoid(x):
 def compute_metrics(eval_pred):
     logits, labels = eval_pred
     predictions = (sigmoid(logits) >= 0.5) * 1
-    return {'F1': f1_score(labels, predictions, average='macro')}
+    return {'F1': calc_f1_score_germeval(labels, predictions)}
 
 
 def plot_result(cross_val_scores, scoring, label):
@@ -377,9 +377,9 @@ if __name__ == '__main__':
                 pred_train_val = sigmoid(trainer.predict(dataset_train_val).predictions)
                 for th in thresholds:
                     y_pred = (pred_train_val >= th) * 1
-                    f1_toxic[th].append(f1_score(y_train_val[:, 0], y_pred[:, 0]))
-                    f1_engaging[th].append(f1_score(y_train_val[:, 1], y_pred[:, 1]))
-                    f1_fact[th].append(f1_score(y_train_val[:, 2], y_pred[:, 2]))
+                    f1_toxic[th].append(calc_f1_score_germeval(y_train_val[:, 0], y_pred[:, 0]))
+                    f1_engaging[th].append(calc_f1_score_germeval(y_train_val[:, 1], y_pred[:, 1]))
+                    f1_fact[th].append(calc_f1_score_germeval(y_train_val[:, 2], y_pred[:, 2]))
 
         y_pred_proba = predictions / (model_count * len(model_names))
 
