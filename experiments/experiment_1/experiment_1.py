@@ -8,7 +8,7 @@ import pandas as pd
 import torch
 import torch.utils.data as tdata
 from matplotlib import pyplot as plt
-from sklearn.metrics import precision_score, recall_score, f1_score, roc_auc_score
+from sklearn.metrics import precision_score, recall_score, f1_score, roc_auc_score, classification_report
 from sklearn.model_selection import KFold
 from transformers import AutoTokenizer, Trainer, TrainingArguments, AutoModelForSequenceClassification, \
     EarlyStoppingCallback, set_seed
@@ -236,6 +236,22 @@ def get_hugging_face_name(name):
     return ''
 
 
+def calc_f1_score_germeval(ly_true, ly_pred):
+    macro_f1 = 0
+    if len(ly_true.shape) == 1:
+        ly_true = ly_true[:, np.newaxis]
+        ly_pred = ly_pred[:, np.newaxis]
+    for i in range(ly_true.shape[1]):
+        report = classification_report(ly_true[:, i], ly_pred[:, i], output_dict=True)
+        precision_score = report['macro avg']['precision']
+        recall_score = report['macro avg']['recall']
+        lf1_score = 0
+        if precision_score + recall_score > 0:
+            lf1_score = 2 * precision_score * recall_score / (precision_score + recall_score)
+        macro_f1 += lf1_score
+    return macro_f1 / ly_true.shape[1]
+
+
 if __name__ == '__main__':
     # relevant inputs
     model_count = 50
@@ -383,7 +399,7 @@ if __name__ == '__main__':
         scores_toxic['test_Recall'] = np.append(scores_toxic['test_Recall'],
                                                 recall_score(y_val[:, 0], y_pred[:, 0]))
         scores_toxic['test_F1'] = np.append(scores_toxic['test_F1'],
-                                            f1_score(y_val[:, 0], y_pred[:, 0]))
+                                            calc_f1_score_germeval(y_val[:, 0], y_pred[:, 0]))
         try:
             scores_toxic['test_AUC'] = np.append(scores_toxic['test_AUC'],
                                                  roc_auc_score(y_val[:, 0], y_pred_proba[:, 0]))
@@ -396,7 +412,7 @@ if __name__ == '__main__':
         scores_engaging['test_Recall'] = np.append(scores_engaging['test_Recall'],
                                                    recall_score(y_val[:, 1], y_pred[:, 1]))
         scores_engaging['test_F1'] = np.append(scores_engaging['test_F1'],
-                                               f1_score(y_val[:, 1], y_pred[:, 1]))
+                                               calc_f1_score_germeval(y_val[:, 1], y_pred[:, 1]))
         try:
             scores_engaging['test_AUC'] = np.append(scores_engaging['test_AUC'],
                                                     roc_auc_score(y_val[:, 1], y_pred_proba[:, 1]))
@@ -409,7 +425,7 @@ if __name__ == '__main__':
         scores_fact['test_Recall'] = np.append(scores_fact['test_Recall'],
                                                recall_score(y_val[:, 2], y_pred[:, 2]))
         scores_fact['test_F1'] = np.append(scores_fact['test_F1'],
-                                           f1_score(y_val[:, 2], y_pred[:, 2]))
+                                           calc_f1_score_germeval(y_val[:, 2], y_pred[:, 2]))
         try:
             scores_fact['test_AUC'] = np.append(scores_fact['test_AUC'],
                                                 roc_auc_score(y_val[:, 2], y_pred_proba[:, 2]))
@@ -422,7 +438,7 @@ if __name__ == '__main__':
         scores_macro['test_Recall'] = np.append(scores_macro['test_Recall'],
                                                 recall_score(y_val, y_pred, average='macro'))
         scores_macro['test_F1'] = np.append(scores_macro['test_F1'],
-                                            f1_score(y_val, y_pred, average='macro'))
+                                            calc_f1_score_germeval(y_val, y_pred))
         try:
             scores_macro['test_AUC'] = np.append(scores_macro['test_AUC'],
                                                  roc_auc_score(y_val, y_pred_proba, average='macro'))

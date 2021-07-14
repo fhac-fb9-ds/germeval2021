@@ -1,4 +1,4 @@
-Macro
+macro
 Precision: 68.10 +- 1.54
 Recall: 69.24 +- 1.12
 F1: 68.59 +- 0.61

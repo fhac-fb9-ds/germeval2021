@@ -1,0 +1,5 @@
+fact-claiming
+Precision: 64.83 +- 1.71
+Recall: 79.14 +- 1.31
+F1: 77.40 +- 0.60
+AUC: 87.19 +- 0.67
