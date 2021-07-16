@@ -465,12 +465,12 @@ if __name__ == '__main__':
         gbert50, gbert50_thresholds = get_gbert_multilabel(df_train, df_test, pool_size)
         gelectra25 = gelectra50[:pool_size // 2]
         gbert25 = gbert50[:pool_size // 2]
-#        gelectra25_toxic = get_gelectra_singlelabel(df_train, df_test, pool_size // 2, 'toxic')
-#        gbert25_toxic = get_gbert_singlelabel(df_train, df_test, pool_size // 2, 'toxic')
-#        gelectra25_engaging = get_gelectra_singlelabel(df_train, df_test, pool_size // 2, 'engaging')
-#        gbert25_engaging = get_gbert_singlelabel(df_train, df_test, pool_size // 2, 'engaging')
-#        gelectra25_fact = get_gelectra_singlelabel(df_train, df_test, pool_size // 2, 'fact')
-#        gbert25_fact = get_gbert_singlelabel(df_train, df_test, pool_size // 2, 'fact')
+        gelectra25_toxic = get_gelectra_singlelabel(df_train, df_test, pool_size // 2, 'toxic')
+        gbert25_toxic = get_gbert_singlelabel(df_train, df_test, pool_size // 2, 'toxic')
+        gelectra25_engaging = get_gelectra_singlelabel(df_train, df_test, pool_size // 2, 'engaging')
+        gbert25_engaging = get_gbert_singlelabel(df_train, df_test, pool_size // 2, 'engaging')
+        gelectra25_fact = get_gelectra_singlelabel(df_train, df_test, pool_size // 2, 'fact')
+        gbert25_fact = get_gbert_singlelabel(df_train, df_test, pool_size // 2, 'fact')
 
         for i in range(1, max_size + 1):
             np.random.seed(i)
@@ -510,45 +510,45 @@ if __name__ == '__main__':
             mean_scores[2][fold].append(np.mean(f1s))
             std_scores[2][fold].append(np.std(f1s))
 
-#        for i in range(2, max_size + 1, 2):
-#            np.random.seed(i)
-#            idx_el_to = np.random.choice(len(gelectra25_toxic), size=(bootstrap_size, int(i / 2)))
-#            idx_mapped_el_to = np.array([np.array([gelectra25_toxic[k] for k in j]) for j in idx_el_to])
-#            idx_be_to = np.random.choice(len(gbert25_toxic), size=(bootstrap_size, int(i / 2)))
-#            idx_mapped_be_to = np.array([np.array([gbert25_toxic[k] for k in j]) for j in idx_be_to])
-#            idx_mapped_to = np.append(idx_mapped_el_to, idx_mapped_be_to, axis=1)
-#            ensembles_to = np.array(
-#                [np.argmax(np.sum(j, axis=0) / len(j), axis=1).reshape((len(y_true), 1)) for j in idx_mapped_to])
+        for i in range(2, max_size + 1, 2):
+            np.random.seed(i)
+            idx_el_to = np.random.choice(len(gelectra25_toxic), size=(bootstrap_size, int(i / 2)))
+            idx_mapped_el_to = np.array([np.array([gelectra25_toxic[k] for k in j]) for j in idx_el_to])
+            idx_be_to = np.random.choice(len(gbert25_toxic), size=(bootstrap_size, int(i / 2)))
+            idx_mapped_be_to = np.array([np.array([gbert25_toxic[k] for k in j]) for j in idx_be_to])
+            idx_mapped_to = np.append(idx_mapped_el_to, idx_mapped_be_to, axis=1)
+            ensembles_to = np.array(
+                [np.argmax(np.sum(j, axis=0) / len(j), axis=1).reshape((len(y_true), 1)) for j in idx_mapped_to])
 
-#            idx_el_en = np.random.choice(len(gelectra25_engaging), size=(bootstrap_size, int(i / 2)))
-#            idx_mapped_el_en = np.array([np.array([gelectra25_engaging[k] for k in j]) for j in idx_el_en])
-#            idx_be_en = np.random.choice(len(gbert25_engaging), size=(bootstrap_size, int(i / 2)))
-#            idx_mapped_be_en = np.array([np.array([gbert25_engaging[k] for k in j]) for j in idx_be_en])
-#            idx_mapped_en = np.append(idx_mapped_el_en, idx_mapped_be_en, axis=1)
-#            ensembles_en = np.array(
-#                [np.argmax(np.sum(j, axis=0) / len(j), axis=1).reshape((len(y_true), 1)) for j in idx_mapped_en])
+            idx_el_en = np.random.choice(len(gelectra25_engaging), size=(bootstrap_size, int(i / 2)))
+            idx_mapped_el_en = np.array([np.array([gelectra25_engaging[k] for k in j]) for j in idx_el_en])
+            idx_be_en = np.random.choice(len(gbert25_engaging), size=(bootstrap_size, int(i / 2)))
+            idx_mapped_be_en = np.array([np.array([gbert25_engaging[k] for k in j]) for j in idx_be_en])
+            idx_mapped_en = np.append(idx_mapped_el_en, idx_mapped_be_en, axis=1)
+            ensembles_en = np.array(
+                [np.argmax(np.sum(j, axis=0) / len(j), axis=1).reshape((len(y_true), 1)) for j in idx_mapped_en])
 
-#            idx_el_fa = np.random.choice(len(gelectra25_fact), size=(bootstrap_size, int(i / 2)))
-#            idx_mapped_el_fa = np.array([np.array([gelectra25_fact[k] for k in j]) for j in idx_el_fa])
-#            idx_be_fa = np.random.choice(len(gbert25_fact), size=(bootstrap_size, int(i / 2)))
-#            idx_mapped_be_fa = np.array([np.array([gbert25_fact[k] for k in j]) for j in idx_be_fa])
-#            idx_mapped_fa = np.append(idx_mapped_el_fa, idx_mapped_be_fa, axis=1)
-#            ensembles_fa = np.array(
-#                [np.argmax(np.sum(j, axis=0) / len(j), axis=1).reshape((len(y_true), 1)) for j in idx_mapped_fa])
+            idx_el_fa = np.random.choice(len(gelectra25_fact), size=(bootstrap_size, int(i / 2)))
+            idx_mapped_el_fa = np.array([np.array([gelectra25_fact[k] for k in j]) for j in idx_el_fa])
+            idx_be_fa = np.random.choice(len(gbert25_fact), size=(bootstrap_size, int(i / 2)))
+            idx_mapped_be_fa = np.array([np.array([gbert25_fact[k] for k in j]) for j in idx_be_fa])
+            idx_mapped_fa = np.append(idx_mapped_el_fa, idx_mapped_be_fa, axis=1)
+            ensembles_fa = np.array(
+                [np.argmax(np.sum(j, axis=0) / len(j), axis=1).reshape((len(y_true), 1)) for j in idx_mapped_fa])
 
-#            ensembles = np.append(np.append(ensembles_to, ensembles_en, axis=2), ensembles_fa, axis=2)
+            ensembles = np.append(np.append(ensembles_to, ensembles_en, axis=2), ensembles_fa, axis=2)
 
-#            f1s = np.array([calc_f1_score_germeval(y_true, j) for j in ensembles])
-#            mean_scores[3][fold].append(np.mean(f1s))
-#            std_scores[3][fold].append(np.std(f1s))
+            f1s = np.array([calc_f1_score_germeval(y_true, j) for j in ensembles])
+            mean_scores[3][fold].append(np.mean(f1s))
+            std_scores[3][fold].append(np.std(f1s))
 
-    with open('scores/scores.txt', 'w') as f:
-        f.write('setups:\n')
-        f.write('1. GELECTRA\n')
-        f.write('2. GELECTRA + GBERT\n')
-        f.write('3. GBERT\n')
-        f.write('4. GELECTRA + GBERT single-label\n\n')
-        f.write('mean scores:\n')
-        f.write(str(mean_scores) + '\n\n')
-        f.write('std scores:\n')
-        f.write(str(std_scores) + '\n')
+with open('scores/scores.txt', 'w') as f:
+    f.write('setups:\n')
+    f.write('1. GELECTRA\n')
+    f.write('2. GELECTRA + GBERT\n')
+    f.write('3. GBERT\n')
+    f.write('4. GELECTRA + GBERT single-label\n\n')
+    f.write('mean scores:\n')
+    f.write(str(mean_scores) + '\n\n')
+    f.write('std scores:\n')
+    f.write(str(std_scores) + '\n')
