@@ -1,0 +1,4 @@
+F1 score for class toxic: 0.7285787601885323
+F1 score for class engaging: 0.6964304796219314
+F1 score for class fact-claiming: 0.7481313808867128
+macro F1 score: 0.7243802068990588

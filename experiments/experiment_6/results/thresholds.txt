@@ -1,0 +1,3 @@
+optimal threshold for classifications of class toxic: 0.42500000000000004
+optimal threshold for classifications of class engaging: 0.5
+optimal threshold for classifications of class claiming: 0.5
