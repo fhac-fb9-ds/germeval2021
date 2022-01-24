@@ -1,5 +1,7 @@
 ## GermEval 2021
 
+### ⚠️ This repository was moved to [dslaborg/germeval2021](https://github.com/dslaborg/germeval2021). ⚠️
+
 Repository containing the experiments described in our paper for the [GermEval 2021 challenge](https://germeval2021toxic.github.io/SharedTask/): "Identifying German toxic, engaging, and fact-claiming comments with ensemble learning (FHAC at GermEval 2021)" ([available online](http://)).
 
 The train and test data can be found in the folder [dataset](./dataset).
